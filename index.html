@@ -1,0 +1,1289 @@
+<!doctype html>
+<html lang="en" data-accent="sage">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>usearranger — Quiet paperwork, present care</title>
+<meta name="description" content="Arranger listens during the arrangement meeting, then prepares the obituary and death certificate for you. No typing. No copying. No screens during the conversation."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --paper: #f7f4ee;
+  --paper-2: #efebe2;
+  --paper-3: #e8e3d6;
+  --ink: #2a2724;
+  --ink-2: #4a4540;
+  --muted: #8a8278;
+  --muted-2: #b3aa9d;
+  --hair: rgba(42, 39, 36, 0.08);
+  --hair-strong: rgba(42, 39, 36, 0.16);
+
+  --sage: #7a8a6f;
+  --sage-deep: #5d6e54;
+  --sage-tint: #e8ebe2;
+  --sage-mist: #f1f3ec;
+
+  --serif: "Newsreader", "Cormorant Garamond", Georgia, serif;
+  --sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "DM Mono", ui-monospace, "SF Mono", monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-sm: 0 1px 2px rgba(42, 39, 36, 0.04), 0 2px 6px rgba(42, 39, 36, 0.04);
+  --shadow-md: 0 2px 4px rgba(42, 39, 36, 0.04), 0 8px 20px rgba(42, 39, 36, 0.06);
+  --shadow-lg: 0 4px 8px rgba(42, 39, 36, 0.05), 0 24px 60px rgba(42, 39, 36, 0.1);
+}
+
+[data-accent="sage"]  { --sage: #7a8a6f; --sage-deep: #5d6e54; --sage-tint: #e8ebe2; --sage-mist: #f1f3ec; }
+[data-accent="slate"] { --sage: #5a6b7e; --sage-deep: #44546a; --sage-tint: #dde3ea; --sage-mist: #ebeff4; }
+[data-accent="clay"]  { --sage: #a4715a; --sage-deep: #855948; --sage-tint: #ecdcd1; --sage-mist: #f4eae3; }
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.container { max-width: 1180px; margin: 0 auto; padding: 0 56px; }
+@media (max-width: 720px) { .container { padding: 0 24px; } }
+
+.nav {
+  padding: 28px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+@media (max-width: 720px) { .nav { padding: 24px; } }
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.brand__mark {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+}
+.nav__links { display: flex; gap: 36px; align-items: center; }
+.nav__links a { color: var(--ink-2); text-decoration: none; font-size: 15px; font-weight: 500; }
+.nav__links a:hover { color: var(--ink); }
+
+.btn {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.btn--primary { background: var(--sage); color: white; }
+.btn--primary:hover { background: var(--sage-deep); }
+.btn--ghost { border-color: var(--hair-strong); background: transparent; color: var(--ink-2); }
+.btn--ghost:hover { background: var(--paper-2); color: var(--ink); }
+.btn--big { font-size: 17px; padding: 16px 28px; border-radius: 14px; }
+
+.hero { padding: 60px 0 48px; text-align: center; }
+.hero__eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  background: var(--sage-mist);
+  border: 1px solid var(--sage-tint);
+  border-radius: 999px;
+  color: var(--sage-deep);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+.hero__eyebrow .dot { width: 6px; height: 6px; background: var(--sage); border-radius: 50%; }
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 68px;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0 auto 24px;
+  max-width: 880px;
+  color: var(--ink);
+}
+.hero h1 em { font-style: italic; color: var(--sage-deep); font-weight: 400; }
+.hero__sub {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 600px;
+  margin: 0 auto 36px;
+  text-wrap: pretty;
+}
+.hero__cta { display: flex; gap: 12px; justify-content: center; }
+
+.demo {
+  margin: 64px 0 96px;
+  padding: 48px 56px;
+  background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--hair);
+}
+.demo__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hair);
+}
+.demo__head-l h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+.demo__head-l p { margin: 0; color: var(--ink-2); font-size: 16px; }
+.demo__restart {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid var(--hair-strong);
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all 0.15s ease;
+}
+.demo__restart:hover { background: var(--paper-2); color: var(--ink); }
+
+.demo__finish {
+  margin-top: 32px;
+  padding: 32px 24px 8px;
+  border-top: 1px solid var(--hair);
+  text-align: center;
+  animation: fadeUp 0.5s ease;
+}
+.demo__finish-quote {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.25;
+  font-style: italic;
+  color: var(--ink);
+  margin: 0 auto 24px;
+  max-width: 620px;
+  text-wrap: pretty;
+}
+
+.timeline { display: flex; flex-direction: column; }
+.stage {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 24px;
+  padding-bottom: 40px;
+  position: relative;
+  transition: opacity 0.4s ease, filter 0.4s ease;
+}
+.stage--locked { opacity: 0.35; filter: saturate(0.4); pointer-events: none; }
+.stage--done { opacity: 0.95; }
+.stage:last-child { padding-bottom: 0; }
+
+.stage__rail { display: flex; flex-direction: column; align-items: center; }
+.stage__dot {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.5px solid var(--hair-strong);
+  color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: all 0.4s ease;
+  z-index: 1;
+}
+.stage--active .stage__dot {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: white;
+  box-shadow: 0 0 0 6px var(--sage-tint);
+}
+.stage--done .stage__dot {
+  background: var(--sage-mist);
+  border-color: var(--sage);
+  color: var(--sage-deep);
+}
+.stage__line { flex: 1; width: 1.5px; background: var(--hair-strong); margin-top: 8px; min-height: 60px; }
+.stage--active .stage__line, .stage--done .stage__line { background: var(--sage); }
+.stage__num { display: block; }
+
+.stage__body { min-width: 0; padding-top: 6px; }
+.stage__head { margin-bottom: 20px; }
+.stage__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sage-deep);
+  margin-bottom: 8px;
+}
+.stage__title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin: 0 0 6px;
+}
+.stage__sub { margin: 0; color: var(--ink-2); font-size: 16px; max-width: 540px; }
+.stage__card {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--hair);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.stage--active .stage__card { box-shadow: var(--shadow-lg); }
+
+.call { padding: 28px 32px; }
+.call__top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.call__people { display: flex; align-items: center; gap: 14px; }
+.call__avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+}
+.call__who { font-weight: 600; font-size: 16px; color: var(--ink); }
+.call__sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.call__rec {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.call__pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); }
+.call__pulse--on { background: #c44; animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.3); }
+}
+.call__time { font-family: var(--mono); color: var(--ink-2); font-weight: 500; }
+
+.call__wave {
+  display: flex; align-items: center; justify-content: center;
+  gap: 3px;
+  height: 90px;
+  padding: 0 8px;
+  margin-bottom: 24px;
+}
+.call__bar {
+  display: block;
+  width: 3px;
+  background: var(--sage);
+  border-radius: 2px;
+  transition: height 0.12s ease, opacity 0.3s ease;
+}
+
+.call__caption {
+  background: var(--sage-mist);
+  border: 1px solid var(--sage-tint);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  min-height: 70px;
+}
+.call__caption--on { opacity: 1; }
+.call__who-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sage-deep);
+  margin-bottom: 4px;
+}
+.call__text { font-family: var(--serif); font-size: 19px; line-height: 1.4; color: var(--ink); font-style: italic; }
+
+.call__foot {
+  display: flex; gap: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+  font-size: 13px;
+  color: var(--muted);
+}
+.call__foot-item { display: flex; align-items: center; gap: 8px; }
+
+.trx { padding: 24px 32px 28px; }
+.trx__head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--hair);
+}
+.trx__title { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; color: var(--ink); }
+.trx__title svg { color: var(--sage-deep); }
+.trx__meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.trx__body { display: flex; flex-direction: column; gap: 14px; min-height: 200px; }
+.trx__line { display: flex; gap: 14px; animation: fadeUp 0.4s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.trx__who {
+  flex-shrink: 0;
+  width: 80px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 4px;
+}
+.trx__line--family .trx__who { color: var(--sage-deep); }
+.trx__text { font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+.trx__mark {
+  background: var(--sage-tint);
+  color: var(--sage-deep);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+  animation: highlight 0.6s ease;
+}
+@keyframes highlight {
+  0% { background: transparent; }
+  50% { background: var(--sage); color: white; }
+  100% { background: var(--sage-tint); color: var(--sage-deep); }
+}
+.trx__typing { display: flex; gap: 5px; align-items: center; padding: 8px 0; }
+.trx__typing span {
+  display: block;
+  width: 7px; height: 7px;
+  background: var(--muted-2);
+  border-radius: 50%;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+.trx__typing span:nth-child(2) { animation-delay: 0.15s; }
+.trx__typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+.trx__facts {
+  margin-top: 24px;
+  padding: 18px 20px;
+  background: var(--sage-mist);
+  border: 1px solid var(--sage-tint);
+  border-radius: var(--radius-md);
+  animation: fadeUp 0.5s ease;
+}
+.trx__facts-title { font-size: 13px; font-weight: 600; color: var(--sage-deep); margin-bottom: 10px; letter-spacing: 0.01em; }
+.trx__facts-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 24px; }
+.trx__fact { font-size: 14px; color: var(--ink-2); }
+.trx__fact b { color: var(--ink); font-weight: 600; margin-right: 6px; }
+
+.obit { padding: 24px 32px 28px; }
+.obit__head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--hair);
+}
+.obit__head-l { display: flex; align-items: center; gap: 12px; }
+.obit__icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--sage-mist);
+  color: var(--sage-deep);
+  display: flex; align-items: center; justify-content: center;
+}
+.obit__name { font-family: var(--serif); font-weight: 500; font-size: 18px; color: var(--ink); }
+.obit__dates { font-size: 13px; color: var(--muted); }
+.obit__chip {
+  background: var(--sage-mist);
+  color: var(--sage-deep);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--sage-tint);
+}
+
+.obit__paper {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 28px;
+  padding: 28px 32px;
+  background: #fdfcf9;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hair);
+  margin-bottom: 20px;
+}
+.obit__photo {
+  width: 140px; height: 170px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--paper-2);
+  border: 1px solid var(--hair);
+}
+.obit__photo-inner { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; }
+.obit__photo-inner svg { position: absolute; inset: 0; }
+.obit__photo-label {
+  position: relative;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.obit__text { font-family: var(--serif); font-size: 17px; line-height: 1.65; color: var(--ink); min-height: 200px; }
+.obit__text p { margin: 0 0 14px; text-wrap: pretty; }
+.obit__text p:last-child { margin-bottom: 0; }
+.obit__text p:first-child::first-letter {
+  font-family: var(--serif);
+  font-size: 48px;
+  line-height: 0.9;
+  float: left;
+  margin: 4px 8px 0 0;
+  color: var(--sage-deep);
+  font-style: italic;
+}
+.obit__cursor {
+  display: inline-block;
+  width: 2px; height: 18px;
+  background: var(--sage);
+  vertical-align: middle;
+  margin-left: 1px;
+  animation: blink 1s steps(2) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.obit__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.cert { padding: 24px 32px 28px; }
+.cert__head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--hair);
+}
+.cert__head-l { display: flex; align-items: center; gap: 14px; }
+.cert__seal { color: var(--sage-deep); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+.cert__title { font-family: var(--serif); font-weight: 500; font-size: 19px; color: var(--ink); }
+.cert__sub { font-size: 12px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.02em; }
+.cert__chip {
+  background: var(--sage-mist);
+  color: var(--sage-deep);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--sage-tint);
+  font-variant-numeric: tabular-nums;
+}
+
+.cert__paper {
+  background:
+    repeating-linear-gradient(180deg,
+      transparent 0,
+      transparent 31px,
+      rgba(122, 138, 111, 0.06) 31px,
+      rgba(122, 138, 111, 0.06) 32px
+    ),
+    #fdfcf9;
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-md);
+  padding: 28px 32px;
+  margin-bottom: 16px;
+}
+.cert__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 32px; margin-bottom: 24px; }
+.cert__field { position: relative; padding-bottom: 10px; border-bottom: 1px solid var(--hair-strong); transition: all 0.4s ease; }
+.cert__field--filled { border-bottom-color: var(--sage); }
+.cert__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.cert__value { font-family: var(--serif); font-size: 18px; color: var(--ink); min-height: 24px; font-style: italic; position: relative; }
+.cert__field--filled .cert__value { animation: fadeUp 0.4s ease; }
+.cert__pending { display: inline-block; width: 60%; height: 2px; background: var(--hair-strong); vertical-align: middle; }
+.cert__pen {
+  display: inline-block;
+  width: 2px; height: 18px;
+  background: var(--sage);
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink 0.8s steps(2) infinite;
+}
+
+.cert__sig-line { padding-top: 8px; }
+.cert__sig-box {
+  margin-top: 6px;
+  height: 64px;
+  border: 1.5px dashed var(--sage);
+  border-radius: var(--radius-sm);
+  background: var(--sage-mist);
+  display: flex; align-items: center; justify-content: center;
+}
+.cert__sig-hint { color: var(--sage-deep); font-size: 13px; font-weight: 500; letter-spacing: 0.02em; }
+
+.cert__note {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--paper-2);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.cert__note svg { color: var(--sage-deep); flex-shrink: 0; }
+
+.how { padding: 80px 0; border-top: 1px solid var(--hair); }
+.how__head { text-align: center; margin-bottom: 56px; }
+.how__head h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 42px;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+.how__head p { margin: 0; color: var(--ink-2); font-size: 17px; max-width: 540px; margin: 0 auto; }
+.how__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.how__card {
+  padding: 32px 24px;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-lg);
+  position: relative;
+}
+.how__num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 36px;
+  color: var(--sage);
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.how__card h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+.how__card p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--ink-2); text-wrap: pretty; }
+
+.foot {
+  margin-top: 80px;
+  padding: 56px 56px 48px;
+  border-top: 1px solid var(--hair);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 720px) { .foot { padding: 40px 24px; } }
+.foot__left {
+  font-family: var(--serif);
+  font-size: 26px;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  max-width: 480px;
+  text-wrap: pretty;
+}
+.foot__copy { text-align: right; font-size: 13px; color: var(--muted); }
+.foot__copy div { margin-bottom: 4px; }
+
+.nxt { margin: 8px 0 0; padding: 18px 32px 22px; border-top: 1px solid var(--hair); }
+.nxt__progress { height: 2px; background: var(--hair); border-radius: 1px; overflow: hidden; margin-bottom: 16px; }
+.nxt__progress-fill { height: 100%; background: var(--sage); border-radius: 1px; transition: width 0.3s ease; }
+.nxt__row { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.nxt__hint { font-size: 14px; color: var(--muted); font-style: italic; display: flex; align-items: center; gap: 10px; }
+.nxt--ready .nxt__hint { color: var(--sage-deep); font-style: normal; font-weight: 500; }
+.nxt--ready .nxt__hint::before {
+  content: "✓";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--sage);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+.nxt__btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 20px;
+  background: var(--sage);
+  color: white;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+}
+.nxt--ready .nxt__btn {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  animation: nxtFade 0.4s ease;
+}
+.nxt__btn:hover { background: var(--sage-deep); }
+.nxt__btn:disabled { cursor: default; }
+.nxt__btn svg { transition: transform 0.2s ease; }
+.nxt__btn:hover svg { transform: translateX(2px); }
+@keyframes nxtFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .hero h1 { font-size: 44px; }
+  .demo { padding: 32px 20px; }
+  .demo__head { flex-direction: column; align-items: flex-start; }
+  .how__grid { grid-template-columns: 1fr 1fr; }
+  .obit__paper { grid-template-columns: 1fr; }
+  .cert__grid { grid-template-columns: 1fr; }
+  .stage { grid-template-columns: 44px 1fr; gap: 16px; }
+  .stage__dot { width: 40px; height: 40px; font-size: 18px; }
+  .call, .trx, .obit, .cert { padding: 20px; }
+}
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+const ACCENT = "sage";
+const SPEED = 1;
+const TONE = "warm";
+const CAPTIONS = true;
+
+const Stage = ({ idx, total, label, title, sub, active, done, locked, children }) => {
+  return (
+    <div className={`stage ${active ? "stage--active" : ""} ${done ? "stage--done" : ""} ${locked ? "stage--locked" : ""}`}>
+      <div className="stage__rail" aria-hidden="true">
+        <div className="stage__dot">
+          {done ? (
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          ) : (
+            <span className="stage__num">{idx}</span>
+          )}
+        </div>
+        {idx < total && <div className="stage__line"/>}
+      </div>
+      <div className="stage__body">
+        <div className="stage__head">
+          <div className="stage__label">Step {idx} of {total} · {label}</div>
+          <h3 className="stage__title">{title}</h3>
+          <p className="stage__sub">{sub}</p>
+        </div>
+        <div className="stage__card">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const NextAction = ({ progress, ready, label, onNext, hint }) => {
+  return (
+    <div className={`nxt ${ready ? "nxt--ready" : ""}`}>
+      <div className="nxt__progress">
+        <div className="nxt__progress-fill" style={{width: `${Math.min(100, progress * 100)}%`}}/>
+      </div>
+      <div className="nxt__row">
+        <div className="nxt__hint">{ready ? "Done. Ready for the next step." : hint}</div>
+        <button className="nxt__btn" onClick={onNext} disabled={!ready}>
+          {label}
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const CallStage = ({ active, captions, speed, onNext }) => {
+  const TOTAL_SECS = 18;
+  const [elapsed, setElapsed] = useState(0);
+  const [waveSeed, setWaveSeed] = useState(0);
+  const [captionIdx, setCaptionIdx] = useState(0);
+
+  const lines = [
+    { who: "Director", text: "Take all the time you need. Whenever you're ready." },
+    { who: "Family", text: "Thank you. Mom always loved her garden. The roses especially." },
+    { who: "Director", text: "That's lovely. And she was born in Asheville, you said?" },
+    { who: "Family", text: "Yes — 1942. She moved here in '64, after she married Dad." },
+  ];
+
+  useEffect(() => {
+    if (!active) { setElapsed(0); setCaptionIdx(0); return; }
+    const t = setInterval(() => setElapsed(e => Math.min(TOTAL_SECS, e + 1)), 350 / speed);
+    return () => clearInterval(t);
+  }, [active, speed]);
+
+  useEffect(() => {
+    if (!active) return;
+    const w = setInterval(() => setWaveSeed(s => s + 1), 120);
+    return () => clearInterval(w);
+  }, [active]);
+
+  useEffect(() => {
+    if (!active) return;
+    const c = setInterval(() => setCaptionIdx(i => (i + 1) % lines.length), 3000 / speed);
+    return () => clearInterval(c);
+  }, [active, speed]);
+
+  const ready = elapsed >= TOTAL_SECS;
+  const progress = elapsed / TOTAL_SECS;
+
+  const mm = String(Math.floor(elapsed / 60)).padStart(2, "0");
+  const ss = String(elapsed % 60).padStart(2, "0");
+
+  const bars = Array.from({ length: 48 }, (_, i) => {
+    const seed = (waveSeed + i) * 0.7;
+    const h = active && !ready ? 18 + Math.abs(Math.sin(seed) * 32) + Math.abs(Math.sin(seed * 1.7) * 14) : 8;
+    return h;
+  });
+
+  return (
+    <div className="call">
+      <div className="call__top">
+        <div className="call__people">
+          <div className="call__avatar">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div>
+            <div className="call__who">Arrangement Meeting</div>
+            <div className="call__sub">With the Whitfield family · Wednesday, 10:14 AM</div>
+          </div>
+        </div>
+        <div className="call__rec">
+          <span className={`call__pulse ${active && !ready ? "call__pulse--on" : ""}`}/>
+          <span>{ready ? "Saved" : "Recording"}</span>
+          <span className="call__time">{mm}:{ss}</span>
+        </div>
+      </div>
+
+      <div className="call__wave">
+        {bars.map((h, i) => (
+          <span key={i} className="call__bar" style={{height: `${h}px`, opacity: active ? 1 : 0.3}}/>
+        ))}
+      </div>
+
+      {captions && (
+        <div className={`call__caption ${active ? "call__caption--on" : ""}`}>
+          <div className="call__who-tag">{lines[captionIdx].who}</div>
+          <div className="call__text">"{lines[captionIdx].text}"</div>
+        </div>
+      )}
+
+      <div className="call__foot">
+        <div className="call__foot-item">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          End-to-end encrypted
+        </div>
+        <div className="call__foot-item">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Family signed consent
+        </div>
+      </div>
+
+      <NextAction
+        progress={progress}
+        ready={ready}
+        hint="Listening to the meeting…"
+        label="Now turn it into words"
+        onNext={onNext}
+      />
+    </div>
+  );
+};
+
+const TranscriptStage = ({ active, speed, onNext }) => {
+  const transcript = [
+    { who: "Director", text: "Take all the time you need. Whenever you're ready." },
+    { who: "Family", text: "Thank you. Mom always loved her garden. The roses especially." },
+    { who: "Director", text: "That's lovely. And she was born in Asheville, you said?" },
+    { who: "Family", text: "Yes — 1942. She moved here in '64, after she married Dad." },
+    { who: "Director", text: "Tell me about him — your father." },
+    { who: "Family", text: "Walter. They were married 58 years. He passed in 2020." },
+    { who: "Director", text: "And the children? You and your siblings?" },
+    { who: "Family", text: "Three of us. Me, my brother James, and our sister Caroline." },
+  ];
+
+  const [shown, setShown] = useState(0);
+  const [highlights, setHighlights] = useState(false);
+
+  useEffect(() => {
+    if (!active) { setShown(0); setHighlights(false); return; }
+    let i = 0;
+    const t = setInterval(() => {
+      i++;
+      setShown(i);
+      if (i >= transcript.length) {
+        clearInterval(t);
+        setTimeout(() => setHighlights(true), 500 / speed);
+      }
+    }, 350 / speed);
+    return () => clearInterval(t);
+  }, [active, speed]);
+
+  const mark = (text) => {
+    if (!highlights) return text;
+    const terms = ["Asheville", "1942", "Walter", "58 years", "Three"];
+    const re = new RegExp(`(${terms.join("|")})`, "gi");
+    const parts = text.split(re);
+    return parts.map((p, i) =>
+      terms.some(t => p.toLowerCase() === t.toLowerCase())
+        ? <mark key={i} className="trx__mark">{p}</mark>
+        : <React.Fragment key={i}>{p}</React.Fragment>
+    );
+  };
+
+  const ready = highlights;
+  const progress = ready ? 1 : (shown / transcript.length) * 0.9;
+
+  return (
+    <div className="trx">
+      <div className="trx__head">
+        <div className="trx__title">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Transcript · auto-generated
+        </div>
+        <div className="trx__meta">{shown} of {transcript.length} lines</div>
+      </div>
+
+      <div className="trx__body">
+        {transcript.slice(0, shown).map((line, i) => (
+          <div key={i} className={`trx__line trx__line--${line.who.toLowerCase()}`}>
+            <span className="trx__who">{line.who}</span>
+            <span className="trx__text">{mark(line.text)}</span>
+          </div>
+        ))}
+        {active && shown < transcript.length && (
+          <div className="trx__typing"><span/><span/><span/></div>
+        )}
+      </div>
+
+      {highlights && (
+        <div className="trx__facts">
+          <div className="trx__facts-title">Details we noticed:</div>
+          <div className="trx__facts-list">
+            <div className="trx__fact"><b>Born</b> Asheville, 1942</div>
+            <div className="trx__fact"><b>Husband</b> Walter, married 58 years</div>
+            <div className="trx__fact"><b>Children</b> Three</div>
+            <div className="trx__fact"><b>Loved</b> Her rose garden</div>
+          </div>
+        </div>
+      )}
+
+      <NextAction
+        progress={progress}
+        ready={ready}
+        hint={shown < transcript.length ? "Writing down every word…" : "Finding the important details…"}
+        label="Now turn it into words"
+        onNext={onNext}
+      />
+    </div>
+  );
+};
+
+const ObituaryStage = ({ active, speed, tone, onNext }) => {
+  const warm = `Margaret Anne Whitfield passed away peacefully on Sunday, April 19, 2026, surrounded by the family she loved so dearly. She was 84.
+
+Margaret was born in Asheville, North Carolina in 1942, and made her home there until her marriage to Walter Whitfield in 1964. The two were inseparable for 58 years, raising three children together — Susan, James, and Caroline — before Walter's passing in 2020.
+
+She was happiest in her garden, where her roses were the envy of the neighborhood. She had a gift for making every visitor feel like family, and a laugh you could hear from the porch.
+
+She is survived by her three children, seven grandchildren, and the countless friends who were lucky to know her.`;
+
+  const minimal = `Margaret Anne Whitfield, 84, of Asheville, died Sunday, April 19, 2026.
+
+Born 1942 in Asheville. Married Walter Whitfield in 1964; they were married 58 years until his death in 2020. Survived by three children — Susan, James, and Caroline — and seven grandchildren.
+
+A devoted gardener, Margaret was known for her roses and her warmth.
+
+Services to be announced.`;
+
+  const text = tone === "minimal" ? minimal : warm;
+  const [chars, setChars] = useState(0);
+
+  useEffect(() => {
+    if (!active) { setChars(0); return; }
+    const target = text.length;
+    let c = 0;
+    const t = setInterval(() => {
+      c += Math.max(2, Math.floor(target / 200));
+      if (c >= target) { c = target; clearInterval(t); }
+      setChars(c);
+    }, 18 / speed);
+    return () => clearInterval(t);
+  }, [active, text, speed]);
+
+  const ready = chars >= text.length;
+  const progress = chars / text.length;
+
+  return (
+    <div className="obit">
+      <div className="obit__head">
+        <div className="obit__head-l">
+          <div className="obit__icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <div>
+            <div className="obit__name">Margaret Anne Whitfield</div>
+            <div className="obit__dates">1942 — 2026</div>
+          </div>
+        </div>
+        <div className="obit__chip">Draft · ready to review</div>
+      </div>
+
+      <div className="obit__paper">
+        <div className="obit__photo" aria-hidden="true">
+          <div className="obit__photo-inner">
+            <svg viewBox="0 0 80 80" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"><defs><pattern id="oblines" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6 L6 0" stroke="rgba(122,138,111,0.18)" strokeWidth="1"/></pattern></defs><rect width="80" height="80" fill="url(#oblines)"/></svg>
+            <span className="obit__photo-label">Photo</span>
+          </div>
+        </div>
+        <div className="obit__text">
+          {text.slice(0, chars).split("\n\n").map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+          {active && chars < text.length && <span className="obit__cursor"/>}
+        </div>
+      </div>
+
+      <NextAction
+        progress={progress}
+        ready={ready}
+        hint="Writing a warm first draft…"
+        label="Now fill the certificate"
+        onNext={onNext}
+      />
+    </div>
+  );
+};
+
+const CertificateStage = ({ active, speed, onFinish }) => {
+  const fields = [
+    { label: "Full legal name", value: "Margaret Anne Whitfield" },
+    { label: "Date of birth", value: "March 14, 1942" },
+    { label: "Place of birth", value: "Asheville, North Carolina" },
+    { label: "Date of death", value: "April 19, 2026" },
+    { label: "Marital status", value: "Widowed" },
+    { label: "Spouse name", value: "Walter J. Whitfield (deceased 2020)" },
+    { label: "Father's name", value: "Robert E. Hollings" },
+    { label: "Mother's maiden name", value: "Eleanor Pruitt" },
+  ];
+
+  const [filled, setFilled] = useState(0);
+
+  useEffect(() => {
+    if (!active) { setFilled(0); return; }
+    let i = 0;
+    const t = setInterval(() => {
+      i++;
+      setFilled(i);
+      if (i >= fields.length) clearInterval(t);
+    }, 280 / speed);
+    return () => clearInterval(t);
+  }, [active, speed]);
+
+  const ready = filled >= fields.length;
+  const progress = filled / fields.length;
+
+  return (
+    <div className="cert">
+      <div className="cert__head">
+        <div className="cert__head-l">
+          <div className="cert__seal">
+            <svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.2"><circle cx="16" cy="16" r="14"/><circle cx="16" cy="16" r="10"/><path d="M16 8 L18 14 L24 14 L19 18 L21 24 L16 20 L11 24 L13 18 L8 14 L14 14 Z" fill="currentColor" stroke="none" opacity="0.3"/></svg>
+          </div>
+          <div>
+            <div className="cert__title">Certificate of Death</div>
+            <div className="cert__sub">State of North Carolina · Form DHHS-1909</div>
+          </div>
+        </div>
+        <div className="cert__chip">Draft · {filled} of {fields.length} fields</div>
+      </div>
+
+      <div className="cert__paper">
+        <div className="cert__grid">
+          {fields.map((f, i) => (
+            <div key={i} className={`cert__field ${i < filled ? "cert__field--filled" : ""}`}>
+              <div className="cert__label">{f.label}</div>
+              <div className="cert__value">
+                {i < filled ? f.value : <span className="cert__pending"/>}
+                {i === filled - 1 && active && <span className="cert__pen"/>}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="cert__sig">
+          <div className="cert__sig-line">
+            <div className="cert__label">Funeral Director — review &amp; sign</div>
+            <div className="cert__sig-box">
+              <span className="cert__sig-hint">Tap here when ready</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="cert__note">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        We never submit anything without your review. You stay in charge.
+      </div>
+
+      <NextAction
+        progress={progress}
+        ready={ready}
+        hint="Filling in fields from the conversation…"
+        label="See the whole flow again"
+        onNext={onFinish}
+      />
+    </div>
+  );
+};
+
+function App() {
+  const [step, setStep] = useState(0);
+  const stageRefs = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
+
+  const advance = (next) => {
+    setStep(next);
+    setTimeout(() => {
+      const el = stageRefs[next]?.current;
+      if (el && el.scrollIntoView) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }, 80);
+  };
+
+  const restart = () => {
+    setStep(0);
+    setTimeout(() => {
+      const demoEl = document.getElementById("demo");
+      if (demoEl) {
+        const top = demoEl.getBoundingClientRect().top + window.scrollY - 40;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }, 80);
+  };
+
+  const stageProps = (idx) => ({
+    active: step === idx,
+    done: step > idx,
+    locked: step < idx
+  });
+
+  return (
+    <>
+      <header className="container nav">
+        <div className="brand">
+          <div className="brand__mark">A</div>
+          Arranger
+        </div>
+        <nav className="nav__links">
+          <a href="#how">How it works</a>
+          <a href="#demo">See it in action</a>
+          <a href="#contact">Contact</a>
+          <button className="btn btn--primary">Book a walkthrough </button>
+        </nav>
+      </header>
+
+      <section className="container hero">
+        <div className="hero__eyebrow">
+          <span className="dot" />
+          For funeral home directors — built with care
+        </div>
+        <h1>Paperwork <em>handled.</em><br />So you can be present.</h1>
+        <p className="hero__sub">Arranger listens during the arrangement meeting,
+then prepares the obituary and death certificate for you.
+
+No typing. No copying. No screens during the conversation.
+
+        </p>
+        <div className="hero__cta">
+          <button className="btn btn--primary btn--big">Book a walkthrough</button>
+          <a href="#demo" className="btn btn--ghost btn--big">See how it works ↓</a>
+        </div>
+      </section>
+
+      <section className="container" id="demo">
+        <div className="demo">
+          <div className="demo__head">
+            <div className="demo__head-l">
+              <h2>Margaret's story, in four steps.</h2>
+              <p>Each step happens on its own. When it's ready, press the green button to keep going.</p>
+            </div>
+            {step > 0 && <button className="demo__restart" onClick={restart}>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" /></svg>
+                Start over
+              </button>}
+          </div>
+
+          <div className="timeline">
+            <div ref={stageRefs[0]}>
+              <Stage idx={1} total={4} label="The Conversation"
+              title="A microphone listens, gently."
+              sub="No laptops. No notes. The director can simply be with the family."
+              {...stageProps(0)}>
+                <CallStage active={step >= 0} captions={CAPTIONS} speed={SPEED}
+                onNext={() => advance(1)} />
+              </Stage>
+            </div>
+
+            <div ref={stageRefs[1]}>
+              <Stage idx={2} total={4} label="The Words"
+              title="Every word, written down."
+              sub="usearranger turns the conversation into a clear transcript and pulls out the details that matter."
+              {...stageProps(1)}>
+                <TranscriptStage active={step >= 1} speed={SPEED}
+                onNext={() => advance(2)} />
+              </Stage>
+            </div>
+
+            <div ref={stageRefs[2]}>
+              <Stage idx={3} total={4} label="The Story"
+              title="A first draft of the obituary."
+              sub="Written in a warm, family-friendly voice. You and the family review and adjust."
+              {...stageProps(2)}>
+                <ObituaryStage active={step >= 2} speed={SPEED} tone={TONE}
+                onNext={() => advance(3)} />
+              </Stage>
+            </div>
+
+            <div ref={stageRefs[3]}>
+              <Stage idx={4} total={4} label="The Forms"
+              title="The certificate, mostly filled in."
+              sub="State-specific fields are completed from the conversation. You review, sign, and submit."
+              {...stageProps(3)}>
+                <CertificateStage active={step >= 3} speed={SPEED}
+                onFinish={() => advance(4)} />
+              </Stage>
+            </div>
+          </div>
+
+          {step >= 4 &&
+          <div className="demo__finish" ref={stageRefs[4]}>
+              <p className="demo__finish-quote">
+                That's it. From conversation to paperwork — without leaving the room.
+              </p>
+              <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                <button className="btn btn--ghost btn--big" onClick={restart}>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" /></svg>
+                  Watch again
+                </button>
+                <button className="btn btn--primary btn--big">Book a walkthrough</button>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section className="container how" id="how">
+        <div className="how__head">
+          <h2>Four steps. That's the whole thing.</h2>
+          <p>No new software for the family. No training for your staff. It just works alongside the meeting you already have.</p>
+        </div>
+        <div className="how__grid">
+          <div className="how__card">
+            <div className="how__num">i.</div>
+            <h4>Press one button</h4>
+            <p>At the start of the meeting, tap "Begin." That's it. Then close the laptop.</p>
+          </div>
+          <div className="how__card">
+            <div className="how__num">ii.</div>
+            <h4>Have the conversation</h4>
+            <p>Talk with the family the way you always have. usearranger listens privately and respectfully.</p>
+          </div>
+          <div className="how__card">
+            <div className="how__num">iii.</div>
+            <h4>Review the drafts</h4>
+            <p>Within minutes, an obituary draft and a death certificate are ready for you to look over.</p>
+          </div>
+          <div className="how__card">
+            <div className="how__num">iv.</div>
+            <h4>Send and sign</h4>
+            <p>Share the obituary with the family. Sign the certificate. Move on with your day.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer className="container foot" id="contact">
+        <div className="foot__left" style={{ width: "500px" }}>
+          "We've spent decades teaching directors to listen.<br />
+          usearranger is the first tool that lets them <em style={{ fontStyle: "italic", color: "var(--sage-deep)" }}>actually do it.</em>"
+        </div>
+        <div className="foot__copy">
+          <div>usearranger · 1-800-555-0142</div>
+          <div>hello@usearranger.com</div>
+          <div style={{ marginTop: 12, color: "var(--muted-2)" }}>© 2026 usearranger, Inc.</div>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
